@@ -6,6 +6,8 @@ import WordBuilder from '@/components/games/WordBuilder';
 import DragDropGame from '@/components/games/DragDropGame';
 import ListenClick from '@/components/games/ListenClick';
 import ToBeGame from '@/components/games/ToBeGame';
+import Confetti from '@/components/Confetti';
+import { useSound } from '@/hooks/useSound';
 
 type GameType = 'memory' | 'quiz' | 'wordbuilder' | 'dragdrop' | 'listen' | 'tobe';
 
@@ -33,7 +35,9 @@ export default function Index() {
   const [scorePopup, setScorePopup] = useState(false);
   const [lastPts, setLastPts] = useState(0);
   const [stars, setStars] = useState(0);
+  const [confetti, setConfetti] = useState(false);
   const [view, setView] = useState<'home' | 'topics' | 'games' | 'playing'>('home');
+  const { playClick, muted, toggleMute } = useSound();
 
   useEffect(() => {
     const saved = localStorage.getItem('engfun-score');
@@ -49,6 +53,7 @@ export default function Index() {
     const newStars = stars + 1;
     setTotalScore(newScore);
     setStars(newStars);
+    if (newStars % 5 === 0) { setConfetti(true); setTimeout(() => setConfetti(false), 3500); }
     localStorage.setItem('engfun-score', String(newScore));
     localStorage.setItem('engfun-stars', String(newStars));
     setTimeout(() => setScorePopup(false), 1500);
@@ -67,17 +72,20 @@ export default function Index() {
   };
 
   const handleGameSelect = (game: GameType) => {
+    playClick();
     setSelectedGame(game);
     setView('playing');
   };
 
   const goHome = () => {
+    playClick();
     setView('home');
     setSelectedTopic(null);
     setSelectedGame(null);
   };
 
   const goTopics = () => {
+    playClick();
     setView('topics');
     setSelectedTopic(null);
     setSelectedGame(null);
@@ -101,11 +109,13 @@ export default function Index() {
 
   return (
     <div className="min-h-screen bubble-bg">
+      <Confetti active={confetti} />
+
       {/* Score popup */}
       {scorePopup && (
-        <div className="fixed top-6 right-6 z-50 animate-bounce-in fun-card border-4 border-yellow-400 bg-yellow-50 px-5 py-3 flex items-center gap-2 shadow-2xl">
+        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 animate-bounce-in fun-card border-4 border-yellow-400 bg-yellow-50 px-6 py-3 flex items-center gap-2 shadow-2xl">
           <span className="text-3xl">⭐</span>
-          <span className="font-fredoka text-2xl text-yellow-600">+{lastPts}</span>
+          <span className="font-fredoka text-2xl text-yellow-600">+{lastPts} баллов!</span>
         </div>
       )}
 
@@ -128,6 +138,13 @@ export default function Index() {
               <span className="text-lg">⭐</span>
               <span className="font-fredoka text-purple-600">{stars}</span>
             </div>
+            <button
+              onClick={toggleMute}
+              className="fun-card border-2 border-gray-200 px-3 py-1.5 text-xl hover:scale-110 transition-all"
+              title={muted ? 'Включить звук' : 'Выключить звук'}
+            >
+              {muted ? '🔇' : '🔊'}
+            </button>
           </div>
         </div>
       </header>
