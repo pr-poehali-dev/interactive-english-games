@@ -325,8 +325,14 @@ export default function Index() {
         )}
       </main>
 
-      <footer className="text-center py-6 text-gray-400 text-sm font-bold">
-        <span>🚀 EnglishFun — Учи английский, играя!</span>
+      <footer className="text-center py-8 px-4">
+        <p className="text-gray-400 text-sm font-bold mb-3">🚀 EnglishFun — Учи английский, играя!</p>
+        <div className="inline-block fun-card border-4 border-purple-200 px-6 py-4 bg-white/80">
+          <p className="text-xs text-gray-400 mb-1">Автор проекта</p>
+          <p className="font-fredoka text-lg text-purple-600">Костянко Дарья</p>
+          <p className="text-sm text-gray-500 font-bold">ученица 10-2 класса</p>
+          <p className="text-xs text-gray-400 mt-1">БОУ г. Омска «Гимназия №26»</p>
+        </div>
       </footer>
     </div>
   );
